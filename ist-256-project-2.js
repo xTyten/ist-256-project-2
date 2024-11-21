@@ -22,20 +22,24 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
 
   constructor() {
     super();
-    this.accessories = "0";  //0-9. 0 is nothing
-    this.base = "0";         //0 or 1 (For the seed: Male 0-4, Female 5-9)
-    this.leg = "0";          //set to 0 and hide input
-    this.face = "0";         //0-5. 0 is nothing
-    this.faceItem = "0";     //0-9. 0 is nothing
-    this.hair = "0";         //0-9
-    this.pants = "0";        //0-9
-    this.shirt = "0";        //0-9
-    this.skin = "0";         //0-9
-    this.hatColor = "0";     //0-9
-    this.hat = "none";          //15 hats including "none"
+    this.accessories = "0"; //0-9. 0 is nothing
+    this.base = "0";        //0 or 1 (For the seed: Male 0-4, Female 5-9)
+    this.leg = "0";         //set to 0 and hide input
+    this.face = "0";        //0-5. 0 is nothing
+    this.faceItem = "0";    //0-9. 0 is nothing
+    this.hair = "0";        //0-9
+    this.pants = "0";       //0-9
+    this.shirt = "0";       //0-9
+    this.skin = "0";        //0-9
+    this.hatColor = "0";    //0-9
+    this.hat = "none";      //15 hats including "none"
     this.fire = false;      // true or false
     this.walking = false;   // true or false
     this.circle = false;    // true or false
+    this.characterWidth = "450";  //Width of the character (adjusts to viewport)
+    this.characterHeight = "450"; //Height of the charcter (adjusts to viewport)
+    this.viewportWidth = window.innerWidth; // Initialize with current width
+    window.addEventListener('resize', () => this.handleResize());
   }
 
   // Lit reactive properties
@@ -55,6 +59,9 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
       fire: { type: Boolean, reflect: true },
       walking: { type: Boolean, reflect: true },
       circle: { type: Boolean, reflect: true },
+      characterWidth: { type: String, reflect: true },
+      characterHeight: { type: String, reflect: true},
+      viewportWidth: { type: Number },
     };
   }
 
@@ -75,19 +82,19 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
       .td-title {
         font-weight: var(--ddd-font-weight-bold, 700); //bold font
       }
+
     `];
   }
 
   // Lit render the HTML
   render() {
     return html`
-    <p>Selected Accessories: ${this.accessories}</p>
-    <p>Selected Body: ${this.base}</p>
     <div class="entire-wrapper">
       <div class="character-seed-wrapper">
         <rpg-character 
-          width="500" 
-          height="500"
+          id="character"
+          width="${this.characterWidth}"
+          height="${this.characterHeight}"
           accessories="${this.accessories}"
           base="${this.base}"
           face="${this.face}"
@@ -410,6 +417,22 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
       attributeFilter: ['selected'],  // Only watch the 'selected' attribute
     });
   }
+  // Runs when a property changes
+  // Adjusts the character's size depending on viewport width
+  updated(changedProperties) {
+    if (changedProperties.has('viewportWidth')) {
+      if (this.viewportWidth < 568) {
+        this.characterHeight="300";
+        this.characterWidth="300";
+      } else if (this.viewportWidth < 768) {
+        this.characterHeight="375";
+        this.characterWidth="375";
+      } else {
+        this.characterHeight="450";
+        this.characterWidth="450";
+      }
+    }
+  }
 
   toggleFire() {
     this.fire = !this.fire;
@@ -422,6 +445,10 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
   }
   testButton() {
     window.alert(`Button pressed`);
+  }
+
+  handleResize() {
+    this.viewportWidth = window.innerWidth; // Update the viewportWidth
   }
 
   /**
