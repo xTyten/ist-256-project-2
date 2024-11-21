@@ -8,26 +8,16 @@
   <meta name="Description" content="Demonstration for ist-256-project-2">
 
   <style>
-    /* :root, html, body {
-      margin: 0;
-      padding: 0;
+    .charTest {
+      display: flex;
+      flex-direction: row;
     }
-    #demo {
-      margin: var(--ddd-spacing-2);
+    .charTitle {
+      margin: 0px 0px;
     }
-    ist-256-project-2 {
-      margin: var(--ddd-spacing-2);
-      border: var(--ddd-border-md);
-      border-radius: var(--ddd-radius-lg);
+    .projTitle {
+      margin: 0px 0px;
     }
-    ist-256-project-2:hover {
-      box-shadow: var(--ddd-boxShadow-sm);
-    }
-    #example {
-      --ist-256-project-2-font-size: var(--ddd-font-size-l);
-      background-color: var(--ddd-accent-2);
-      color: var(--ddd-primary-17);
-    } */
   </style>
   <title>ist-256-project-2</title>
 </head>
@@ -38,13 +28,42 @@
   </script>
   
   <div id="demo">
-    <rpg-character
-      literalseed
-      seed="5500135245"
-    ></rpg-character>
-    <h1>ist-256-project-2</h1>
+    <div class="charTest">
+      <div>
+        <p class="charTitle">literalseed</p>
+        <rpg-character
+          literalseed
+          seed="1505537481"
+        ></rpg-character>
+      </div>
+      <div>
+        <p class="charTitle">regular seed</p>
+        <rpg-character
+          id="regular"
+          seed="bingus"
+        ></rpg-character>
+      </div>
+    </div>
+    <script>
+      // const character = document.getElementById('regular');
+      // console.log(character);
+      // Characters with regular seeds don't have their numbers set
+    </script>
+    <!-- 
+      this.accessories = "0"; 
+      this.base = "1";     
+      this.leg = "0"; 
+      this.face = "5";  
+      this.faceItem = "8";
+      this.hair = "1";        
+      this.pants = "8";     
+      this.shirt = "7";   
+      this.skin = "1";    
+      this.hatColor = "2";  
+    -->
+    <h4 class="projTitle">ist-256-project-2</h4>
     <p>Github issue: <a href="https://github.com/haxtheweb/issues/issues/1414">link</a></p>
-    <ist-256-project-2></ist-256-project-2>
+    <ist-256-project-2 seed="bingus"></ist-256-project-2>
   <!-- circle="1" fire="1" walking="1"-->
   </div>
   <script type="module" src="./ist-256-project-2.js"></script>

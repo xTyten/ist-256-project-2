@@ -38,6 +38,7 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
     this.circle = false;    // true or false
 
     this.literalSeed = "";
+    this.seed = "";
 
     this.characterWidth = "450";  //Width of the character (adjusts to viewport)
     this.characterHeight = "450"; //Height of the charcter (adjusts to viewport)
@@ -64,6 +65,7 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
       circle: { type: Boolean, reflect: true },
 
       literalSeed: { type: String, reflect: true },
+      seed: { type: String, reflect: true },
       
       characterWidth: { type: String, reflect: true },
       characterHeight: { type: String, reflect: true},
@@ -106,6 +108,7 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
         -->
         <rpg-character 
           id="character"
+          
 
           width="${this.characterWidth}"
           height="${this.characterHeight}"
@@ -312,24 +315,36 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
   }
 
   async firstUpdated() { //Sets up literalseed and MutationObservers 
+    // READ QUERY STRINGS HERE !!!
+
+
+    
     await this.updateComplete; // waits for component to render
     const character = this.shadowRoot.getElementById('character');
-
-    // Sets properties according to the randomized settings
-    this.accessories = character.accessories;
-    this.base = character.base;
-    this.leg = character.leg;
-    this.face = character.face;
-    this.faceItem = character.faceItem;
-    this.hair = character.hair;
-    this.pants = character.pants;
-    this.shirt = character.shirt;
-    this.skin = character.skin;
-    this.hatColor = character.hatColor;
-    this.hat = character.hat;
-    this.fire = character.fire;
-    this.walking = character.walking;
-    this.circle = character.circle;
+    // Chooses whether seed is literal or regular
+    if (this.seed) {
+      // regular seeds don't have their options selected.
+      // for example: character.base will return null
+      character.setAttribute('seed', this.seed);
+      this.literalSeed = this.seed;
+    } else {
+      character.setAttribute('literalseed', '');
+      // Sets properties according to the randomized settings
+      this.accessories = character.accessories;
+      this.base = character.base;
+      this.leg = 0;
+      this.face = character.face;
+      this.faceItem = character.faceItem;
+      this.hair = character.hair;
+      this.pants = character.pants;
+      this.shirt = character.shirt;
+      this.skin = character.skin;
+      this.hatColor = character.hatColor;
+      this.hat = character.hat;
+      this.fire = character.fire;
+      this.walking = character.walking;
+      this.circle = character.circle;
+    }
 
     // Listen to the 'selected' attribute change of the wired-combo element
     const combo0 = this.shadowRoot.getElementById('accessoryDrop');
