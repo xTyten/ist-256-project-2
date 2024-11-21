@@ -36,6 +36,9 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
     this.fire = false;      // true or false
     this.walking = false;   // true or false
     this.circle = false;    // true or false
+
+    this.literalSeed = "";
+
     this.characterWidth = "450";  //Width of the character (adjusts to viewport)
     this.characterHeight = "450"; //Height of the charcter (adjusts to viewport)
     this.viewportWidth = window.innerWidth; // Initialize with current width
@@ -59,6 +62,9 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
       fire: { type: Boolean, reflect: true },
       walking: { type: Boolean, reflect: true },
       circle: { type: Boolean, reflect: true },
+
+      literalSeed: { type: String, reflect: true },
+      
       characterWidth: { type: String, reflect: true },
       characterHeight: { type: String, reflect: true},
       viewportWidth: { type: Number },
@@ -91,8 +97,16 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
     return html`
     <div class="entire-wrapper">
       <div class="character-seed-wrapper">
+        <!-- 
+        Seed is 10 digits. 
+        The third digit (leg) is always 0.
+        Hat is not part of the seed 
+        exampleseed: 1501111111 
+        each number in the seed represents an option in alphabetical order
+        -->
         <rpg-character 
           id="character"
+
           width="${this.characterWidth}"
           height="${this.characterHeight}"
           accessories="${this.accessories}"
@@ -105,13 +119,14 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
           skin="${this.skin}"
           hatcolor="${this.hatColor}"
           hat="${this.hat}"
-
+          
           ?fire=${this.fire}
           ?walking=${this.walking}
           ?circle=${this.circle}
           >
+          <!-- toggles attributes depending if true or false -->
         </rpg-character>
-        <h3>Seed: </h3>
+        <h3>Seed: ${this.literalSeed}</h3>
       </div>
       <table>
         <form>
@@ -139,38 +154,9 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
               <wired-combo id="baseDrop" selected="" role="combobox" aria-haspopup="listbox" tabindex="0" class="wired-rendered" aria-expanded="false">
                 <wired-item value="0" role="option" class="wired-rendered">Male</wired-item>
                 <wired-item value="1" role="option" class="wired-rendered">Female</wired-item>
-                <!-- <wired-item value="0" role="option" class="wired-rendered">0</wired-item>
-                <wired-item value="1" role="option" class="wired-rendered">1</wired-item>
-                <wired-item value="2" role="option" class="wired-rendered">2</wired-item>
-                <wired-item value="3" role="option" class="wired-rendered">3</wired-item>
-                <wired-item value="4" role="option" class="wired-rendered">4</wired-item>
-                <wired-item value="5" role="option" class="wired-rendered">5</wired-item>
-                <wired-item value="6" role="option" class="wired-rendered">6</wired-item>
-                <wired-item value="7" role="option" class="wired-rendered">7</wired-item>
-                <wired-item value="8" role="option" class="wired-rendered">8</wired-item>
-                <wired-item value="9" role="option" class="wired-rendered">9</wired-item> -->
               </wired-combo>
             </td>
           </tr>
-          <!--
-          <tr>
-            <td class="td-title">Leg:</td>
-            <td>
-              <wired-combo selected="0" role="combobox" aria-haspopup="listbox" tabindex="0" class="wired-rendered" aria-expanded="false">
-                <wired-item value="0" role="option" class="wired-rendered">0</wired-item>
-                <wired-item value="1" role="option" class="wired-rendered">1</wired-item>
-                <wired-item value="2" role="option" class="wired-rendered">2</wired-item>
-                <wired-item value="3" role="option" class="wired-rendered">3</wired-item>
-                <wired-item value="4" role="option" class="wired-rendered">4</wired-item>
-                <wired-item value="5" role="option" class="wired-rendered">5</wired-item>
-                <wired-item value="6" role="option" class="wired-rendered">6</wired-item>
-                <wired-item value="7" role="option" class="wired-rendered">7</wired-item>
-                <wired-item value="8" role="option" class="wired-rendered">8</wired-item>
-                <wired-item value="9" role="option" class="wired-rendered">9</wired-item>
-              </wired-combo>
-            </td>
-          </tr>
-          -->
           <tr>
             <td class="td-title">Face:</td>
             <td>
@@ -325,7 +311,26 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
     `;
   }
 
-  firstUpdated() { //Sets up MutationObservers 
+  async firstUpdated() { //Sets up literalseed and MutationObservers 
+    await this.updateComplete; // waits for component to render
+    const character = this.shadowRoot.getElementById('character');
+
+    // Sets properties according to the randomized settings
+    this.accessories = character.accessories;
+    this.base = character.base;
+    this.leg = character.leg;
+    this.face = character.face;
+    this.faceItem = character.faceItem;
+    this.hair = character.hair;
+    this.pants = character.pants;
+    this.shirt = character.shirt;
+    this.skin = character.skin;
+    this.hatColor = character.hatColor;
+    this.hat = character.hat;
+    this.fire = character.fire;
+    this.walking = character.walking;
+    this.circle = character.circle;
+
     // Listen to the 'selected' attribute change of the wired-combo element
     const combo0 = this.shadowRoot.getElementById('accessoryDrop');
     const observer0 = new MutationObserver(() => {
@@ -338,6 +343,8 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
 
     const combo1 = this.shadowRoot.getElementById('baseDrop');
     const observer1 = new MutationObserver(() => {
+      // THE BASE SVGS ARE SET TO 0 FOR MALE AND 1 FOR FEMALE
+      // BUT THE SEED ACCEPTS 1 AS MALE AND 5 AS FEMALE
       this.base = combo1.selected;
     });
     observer1.observe(combo1, {
@@ -430,6 +437,18 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
       } else {
         this.characterHeight="450";
         this.characterWidth="450";
+      }
+    }
+
+    // Updates the literalseed when one of the properties change
+    // Leg is not included because the user doesn't change it
+      // THE BASE SVGS ARE SET TO 0 FOR MALE AND 1 FOR FEMALE
+      // BUT THE SEED ACCEPTS 1 AS MALE AND 5 AS FEMALE
+    if (changedProperties.has('accessories') || changedProperties.has('base') || changedProperties.has('face') || changedProperties.has('faceItem') || changedProperties.has('hair') || changedProperties.has('pants') || changedProperties.has('shirt') || changedProperties.has('skin') || changedProperties.has('hatColor')) {
+      if (this.base == 0) { // the "1" is for the male base. the "0" is for the leg
+        this.literalSeed = this.accessories + "1" + "0" + this.face + this.faceItem + this.hair + this.pants + this.shirt + this.skin + this.hatColor;
+      } else if (this.base == 1) { // the "5" is for the female base. the "0" is for the leg
+        this.literalSeed = this.accessories + "5" + "0" + this.face + this.faceItem + this.hair + this.pants + this.shirt + this.skin + this.hatColor;
       }
     }
   }
