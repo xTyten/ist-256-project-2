@@ -37,8 +37,9 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
     this.walking = false;   // true or false
     this.circle = false;    // true or false
 
-    this.literalSeed = "";
-    this.seed = "";
+    this.seedText = "";  // The seed used if 10 digits Ex: "1505537481"
+    this.seed = "";         // The seed used if a user types in a regular seed Ex: "blah"
+    this.literalseed = false;
 
     this.characterWidth = "450";  //Width of the character (adjusts to viewport)
     this.characterHeight = "450"; //Height of the charcter (adjusts to viewport)
@@ -64,8 +65,9 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
       walking: { type: Boolean, reflect: true },
       circle: { type: Boolean, reflect: true },
 
-      literalSeed: { type: String, reflect: true },
+      seedText: { type: String, reflect: true },
       seed: { type: String, reflect: true },
+      literalseed: { type: Boolean, reflect: true},
       
       characterWidth: { type: String, reflect: true },
       characterHeight: { type: String, reflect: true},
@@ -123,13 +125,15 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
           hatcolor="${this.hatColor}"
           hat="${this.hat}"
           
+          ?literalseed=${this.literalseed}
           ?fire=${this.fire}
           ?walking=${this.walking}
           ?circle=${this.circle}
           >
           <!-- toggles attributes depending if true or false -->
         </rpg-character>
-        <h3>Seed: ${this.literalSeed}</h3>
+        <h3>Seed: ${this.seedText}</h3>
+        <p>regular seed won't be accurate<br>until all dropdowns are filled</p>
       </div>
       <table>
         <form>
@@ -315,21 +319,56 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
   }
 
   async firstUpdated() { //Sets up literalseed and MutationObservers 
-    // READ QUERY STRINGS HERE !!!
+    // READ/WRITE QUERY STRINGS HERE !!!
+    // Gets entire URL including slugs / Gets Domain: window.location.hostname;
+    const domain = window.location.href;
 
-
+    console.log(domain);
+    const params = new URLSearchParams({
+      seed: "1501111111",
+      hat: "random",
+      fire: "false",
+      walking: "false",
+      circle: "false",
+    })
+    const fullURL = `${domain}?${params.toString()}`
+    console.log(fullURL);
     
     await this.updateComplete; // waits for component to render
     const character = this.shadowRoot.getElementById('character');
-    // Chooses whether seed is literal or regular
+    // Chooses whether seed is set or not
     if (this.seed) {
+      // Seed is set
       // regular seeds don't have their options selected.
       // for example: character.base will return null
       character.setAttribute('seed', this.seed);
-      this.literalSeed = this.seed;
+      this.seedText = this.seed;
+      console.log("SEED TEXT BEFORE:"+this.seedText);
+
+      // CHANGE PROPERTIES ACCORDING TO LITERALSEED
+      this.accessories = character.accessories;
+      this.base = character.base;
+      this.leg = 0;
+      this.face = character.face;
+      this.faceItem = character.faceItem;
+      this.hair = character.hair;
+      this.pants = character.pants;
+      this.shirt = character.shirt;
+      this.skin = character.skin;
+      this.hatColor = character.hatColor;
+      this.hat = character.hat;
+      this.fire = character.fire;
+      this.walking = character.walking;
+      this.circle = character.circle;
+      console.log(character.accessories);
+      console.log(character.base);
+      console.log(character.leg);
+      console.log(character.face);
+
+      console.log("SEED TEXT AFTER:"+this.seedText);
     } else {
-      character.setAttribute('literalseed', '');
       // Sets properties according to the randomized settings
+      character.setAttribute('literalseed', '');
       this.accessories = character.accessories;
       this.base = character.base;
       this.leg = 0;
@@ -461,9 +500,9 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
       // BUT THE SEED ACCEPTS 1 AS MALE AND 5 AS FEMALE
     if (changedProperties.has('accessories') || changedProperties.has('base') || changedProperties.has('face') || changedProperties.has('faceItem') || changedProperties.has('hair') || changedProperties.has('pants') || changedProperties.has('shirt') || changedProperties.has('skin') || changedProperties.has('hatColor')) {
       if (this.base == 0) { // the "1" is for the male base. the "0" is for the leg
-        this.literalSeed = this.accessories + "1" + "0" + this.face + this.faceItem + this.hair + this.pants + this.shirt + this.skin + this.hatColor;
+        this.seedText = this.accessories + "1" + "0" + this.face + this.faceItem + this.hair + this.pants + this.shirt + this.skin + this.hatColor;
       } else if (this.base == 1) { // the "5" is for the female base. the "0" is for the leg
-        this.literalSeed = this.accessories + "5" + "0" + this.face + this.faceItem + this.hair + this.pants + this.shirt + this.skin + this.hatColor;
+        this.seedText = this.accessories + "5" + "0" + this.face + this.faceItem + this.hair + this.pants + this.shirt + this.skin + this.hatColor;
       }
     }
   }
