@@ -7,6 +7,7 @@ import { DDDSuper } from "@haxtheweb/d-d-d/d-d-d.js";
 import { I18NMixin } from "@haxtheweb/i18n-manager/lib/I18NMixin.js";
 import "@haxtheweb/rpg-character/rpg-character.js";
 import { WiredButton, WiredInput } from "wired-elements"
+import { query } from "lit/decorators.js";
 
 /**
  * `ist-256-project-2`
@@ -319,31 +320,48 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
   }
 
   async firstUpdated() { //Sets up literalseed and MutationObservers 
-    // READ/WRITE QUERY STRINGS HERE !!!
-    // Gets entire URL including slugs / Gets Domain: window.location.hostname;
-    const domain = window.location.href;
+    // READ QUERY STRINGS HERE !!!
 
-    console.log(domain);
-    const params = new URLSearchParams({
-      seed: "1501111111",
-      hat: "random",
-      fire: "false",
-      walking: "false",
-      circle: "false",
-    })
-    const fullURL = `${domain}?${params.toString()}`
-    console.log(fullURL);
+    // Get full URL
+    const currURL = window.location.href;
+    // Create URL object
+    const url = new URL(currURL);
+    // Create URLSearchParams to go through query string
+    const queryParams = new URLSearchParams(url.search);
+    const retrievedSeedText = queryParams.get('seed');
+    const retrievedHat = queryParams.get('hat');
+    const retrievedFire = queryParams.get('fire');
+    const retrievedWalking = queryParams.get('walking');
+    const retrievedCircle = queryParams.get('circle');
+
+    console.log("Retrieved Seed: "+retrievedSeedText);
+    console.log("Retrieved Hat: "+retrievedHat);
+    console.log("Retrieved Fire: "+retrievedFire);
+    console.log("Retrieved Walking: "+retrievedWalking);
+    console.log("Retrieved Circle: "+retrievedCircle);
+
+    // const domain = window.location.href;
+    // console.log(domain);
+    // const params = new URLSearchParams({
+    //   seed: this.seedText,
+    //   hat: "random",
+    //   fire: "false",
+    //   walking: "false",
+    //   circle: "false",
+    // })
+    // const fullURL = `${domain}?${params.toString()}`
+    // console.log(fullURL);
     
     await this.updateComplete; // waits for component to render
     const character = this.shadowRoot.getElementById('character');
     // Chooses whether seed is set or not
-    if (this.seed) {
-      // Seed is set
-      // regular seeds don't have their options selected.
-      // for example: character.base will return null
+    // THIS "if (this.seed)" PART WILL NOT BE RELEVANT AFTER IMPLEMENTING QUERYSTRINGS
+    
+    if (this.seed) { // Seed is set
+      this.literalseed = true;
       character.setAttribute('seed', this.seed);
       this.seedText = this.seed;
-      console.log("SEED TEXT BEFORE:"+this.seedText);
+      // console.log("SEED TEXT BEFORE:"+this.seedText);
 
       // CHANGE PROPERTIES ACCORDING TO LITERALSEED
       this.accessories = character.accessories;
@@ -360,15 +378,19 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
       this.fire = character.fire;
       this.walking = character.walking;
       this.circle = character.circle;
-      console.log(character.accessories);
-      console.log(character.base);
-      console.log(character.leg);
-      console.log(character.face);
+      // console.log(character.accessories);
+      // console.log(character.base);
+      // console.log(character.leg);
+      // console.log(character.face);
+      // console.log(character.faceItem);
+      // console.log(character.hair);
 
-      console.log("SEED TEXT AFTER:"+this.seedText);
-    } else {
+      // console.log("SEED TEXT AFTER:"+this.seedText);
+    } else { // Seed is not set
+      // adds literalseed after so the rpg-character can randomly generate a character first
+      // If generated with literalseed, it is not randomized
+      this.literalseed = true; 
       // Sets properties according to the randomized settings
-      character.setAttribute('literalseed', '');
       this.accessories = character.accessories;
       this.base = character.base;
       this.leg = 0;
@@ -384,6 +406,7 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
       this.walking = character.walking;
       this.circle = character.circle;
     }
+
 
     // Listen to the 'selected' attribute change of the wired-combo element
     const combo0 = this.shadowRoot.getElementById('accessoryDrop');
@@ -494,7 +517,7 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
       }
     }
 
-    // Updates the literalseed when one of the properties change
+    // Updates the seedText when one of the properties change
     // Leg is not included because the user doesn't change it
       // THE BASE SVGS ARE SET TO 0 FOR MALE AND 1 FOR FEMALE
       // BUT THE SEED ACCEPTS 1 AS MALE AND 5 AS FEMALE
@@ -505,6 +528,18 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
         this.seedText = this.accessories + "5" + "0" + this.face + this.faceItem + this.hair + this.pants + this.shirt + this.skin + this.hatColor;
       }
     }
+
+    // Updates querystring according to changes without reloading the page
+    const domain = window.location.origin; // gets domain without slug
+    const params = new URLSearchParams({ // creates querystring
+      seed: this.seedText,
+      hat: this.hat,
+      fire: this.fire,
+      walking: this.walking,
+      circle: this.circle,
+    })
+    const fullURL = `${domain}?${params.toString()}` // makes new URL
+    history.pushState(null, '', fullURL); // pushes new URL without reloading
   }
 
   toggleFire() {
