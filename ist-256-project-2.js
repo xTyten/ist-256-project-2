@@ -75,7 +75,6 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
     };
   }
 
-  // Lit scoped styles
   static get styles() {
     return [
     css`
@@ -96,10 +95,8 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
     `];
   }
 
-  // Lit render the HTML
   render() {
     return html`
-    <style> a { color: inherit; } </style>
     <div class="entire-wrapper">
       <div class="character-seed-wrapper">
         <!-- 
@@ -309,10 +306,10 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
             <td><wired-checkbox id="circleBox" class="wired-rendered" @change=${this.toggleCircle}></wired-checkbox></td>
           </tr>
           <tr>
-            <td><a href=""><wired-button>Randomize</wired-button></a></td>
+            <td><wired-button @click=${this.randomizeButton}>Randomize</wired-button></td>
           </tr>
           <tr>
-            <td><wired-button @click=${this.testButton}>Share Link</wired-button></td>
+            <td><wired-button @click=${this.copyButton}>Share Link</wired-button></td>
           </tr>
         </form>
       </table>
@@ -548,10 +545,14 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
   toggleCircle() {
     this.circle = !this.circle;
   }
-  testButton() {
+  copyButton() {
     const currentURL = window.location.href;
     navigator.clipboard.writeText(currentURL);
     alert("URL copied to clipboard");
+  }
+  randomizeButton() {
+    const baseURL = window.location.origin; // gets domain without slug
+    window.location.href = baseURL;
   }
 
   handleResize() {
