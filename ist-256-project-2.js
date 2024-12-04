@@ -39,8 +39,7 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
     this.circle = false;    // true or false
 
     this.seedText = "";  // The seed used if 10 digits Ex: "1505537481"
-    this.seed = "";         // The seed used if a user types in a regular seed Ex: "blah"
-    this.literalseed = false;
+    // this.seed = "";         // The seed used if a user types in a literalseed Ex: "1505537481"
 
     this.characterWidth = "450";  //Width of the character (adjusts to viewport)
     this.characterHeight = "450"; //Height of the charcter (adjusts to viewport)
@@ -67,7 +66,7 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
       circle: { type: Boolean, reflect: true },
 
       seedText: { type: String, reflect: true },
-      seed: { type: String, reflect: true },
+      // seed: { type: String, reflect: true },
       literalseed: { type: Boolean, reflect: true},
       
       characterWidth: { type: String, reflect: true },
@@ -100,6 +99,7 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
   // Lit render the HTML
   render() {
     return html`
+    <style> a { color: inherit; } </style>
     <div class="entire-wrapper">
       <div class="character-seed-wrapper">
         <!-- 
@@ -111,7 +111,7 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
         -->
         <rpg-character 
           id="character"
-          
+          literalseed
 
           width="${this.characterWidth}"
           height="${this.characterHeight}"
@@ -126,7 +126,6 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
           hatcolor="${this.hatColor}"
           hat="${this.hat}"
           
-          ?literalseed=${this.literalseed}
           ?fire=${this.fire}
           ?walking=${this.walking}
           ?circle=${this.circle}
@@ -134,7 +133,6 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
           <!-- toggles attributes depending if true or false -->
         </rpg-character>
         <h3>Seed: ${this.seedText}</h3>
-        <p>regular seed won't be accurate<br>until all dropdowns are filled</p>
       </div>
       <table>
         <form>
@@ -300,15 +298,18 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
           </tr>
           <tr>
             <td class="td-title">On fire:</td>
-            <td><wired-checkbox class="wired-rendered" @change=${this.toggleFire}></wired-checkbox></td>
+            <td><wired-checkbox id="fireBox" class="wired-rendered" @change=${this.toggleFire}></wired-checkbox></td>
           </tr>
           <tr>
             <td class="td-title">Walking:</td>
-            <td><wired-checkbox class="wired-rendered" @change=${this.toggleWalking}></wired-checkbox></td>
+            <td><wired-checkbox id="walkingBox" class="wired-rendered" @change=${this.toggleWalking}></wired-checkbox></td>
           </tr>
           <tr>
             <td class="td-title">Circle:</td>
-            <td><wired-checkbox class="wired-rendered" @change=${this.toggleCircle}></wired-checkbox></td>
+            <td><wired-checkbox id="circleBox" class="wired-rendered" @change=${this.toggleCircle}></wired-checkbox></td>
+          </tr>
+          <tr>
+            <td><a href=""><wired-button>Randomize</wired-button></a></td>
           </tr>
           <tr>
             <td><wired-button @click=${this.testButton}>Share Link</wired-button></td>
@@ -319,94 +320,90 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
     `;
   }
 
-  async firstUpdated() { //Sets up literalseed and MutationObservers 
-    // READ QUERY STRINGS HERE !!!
-
-    // Get full URL
-    const currURL = window.location.href;
-    // Create URL object
-    const url = new URL(currURL);
-    // Create URLSearchParams to go through query string
-    const queryParams = new URLSearchParams(url.search);
-    const retrievedSeedText = queryParams.get('seed');
-    const retrievedHat = queryParams.get('hat');
-    const retrievedFire = queryParams.get('fire');
-    const retrievedWalking = queryParams.get('walking');
-    const retrievedCircle = queryParams.get('circle');
-
-    console.log("Retrieved Seed: "+retrievedSeedText);
-    console.log("Retrieved Hat: "+retrievedHat);
-    console.log("Retrieved Fire: "+retrievedFire);
-    console.log("Retrieved Walking: "+retrievedWalking);
-    console.log("Retrieved Circle: "+retrievedCircle);
-
-    // const domain = window.location.href;
-    // console.log(domain);
-    // const params = new URLSearchParams({
-    //   seed: this.seedText,
-    //   hat: "random",
-    //   fire: "false",
-    //   walking: "false",
-    //   circle: "false",
-    // })
-    // const fullURL = `${domain}?${params.toString()}`
-    // console.log(fullURL);
-    
-    await this.updateComplete; // waits for component to render
+  firstUpdated() { //Sets up seed and MutationObservers 
     const character = this.shadowRoot.getElementById('character');
-    // Chooses whether seed is set or not
-    // THIS "if (this.seed)" PART WILL NOT BE RELEVANT AFTER IMPLEMENTING QUERYSTRINGS
-    
-    if (this.seed) { // Seed is set
-      this.literalseed = true;
-      character.setAttribute('seed', this.seed);
-      this.seedText = this.seed;
-      // console.log("SEED TEXT BEFORE:"+this.seedText);
 
-      // CHANGE PROPERTIES ACCORDING TO LITERALSEED
-      this.accessories = character.accessories;
-      this.base = character.base;
+    // Checks if there is query string for the seed in the URL
+    const queryString = window.location.search;
+    if (queryString) { // queryString found
+      // Get full URL
+      const currURL = window.location.href;
+      // Create URL object
+      const url = new URL(currURL);
+      // Create URLSearchParams to go through query string
+      const queryParams = new URLSearchParams(url.search);
+      const retrievedSeedText = queryParams.get('seed');
+      const retrievedHat = queryParams.get('hat');
+      const retrievedFire = queryParams.get('fire');
+      const retrievedWalking = queryParams.get('walking');
+      const retrievedCircle = queryParams.get('circle');
+
+      console.log("Retrieved Seed: "+retrievedSeedText);
+      console.log("Retrieved Hat: "+retrievedHat);
+      console.log("Retrieved Fire: "+retrievedFire);
+      console.log("Retrieved Walking: "+retrievedWalking);
+      console.log("Retrieved Circle: "+retrievedCircle);
+
+      const seedList = retrievedSeedText.split('');
+
+      this.accessories = seedList[0];
+      if (seedList[1] >= 0 && seedList[1] <= 4) { // If 0-4 set to 1
+        this.base = 0; // the element interprets 0 as male
+      } else if (seedList[1] >= 5 && seedList[1] <= 9) { // if 5-9 set to 5
+        this.base = 1; // the element intreprets 1 as female
+      }
       this.leg = 0;
-      this.face = character.face;
-      this.faceItem = character.faceItem;
-      this.hair = character.hair;
-      this.pants = character.pants;
-      this.shirt = character.shirt;
-      this.skin = character.skin;
-      this.hatColor = character.hatColor;
-      this.hat = character.hat;
-      this.fire = character.fire;
-      this.walking = character.walking;
-      this.circle = character.circle;
-      // console.log(character.accessories);
-      // console.log(character.base);
-      // console.log(character.leg);
-      // console.log(character.face);
-      // console.log(character.faceItem);
-      // console.log(character.hair);
+      this.face = seedList[3];
+      this.faceItem = seedList[4];
+      this.hair = seedList[5];
+      this.pants = seedList[6];
+      this.shirt = seedList[7];
+      this.skin = seedList[8];
+      this.hatColor = seedList[9];
+      this.hat = retrievedHat;
 
-      // console.log("SEED TEXT AFTER:"+this.seedText);
-    } else { // Seed is not set
-      // adds literalseed after so the rpg-character can randomly generate a character first
-      // If generated with literalseed, it is not randomized
-      this.literalseed = true; 
+      // Sets boolean variables. Boxes are checked accordingly
+      const fireBox = this.shadowRoot.getElementById('fireBox');
+      this.fire = retrievedFire == 'true'; // sets true if equal to 'true'
+      if (this.fire == true) {
+        fireBox.setAttribute('checked', 'true');
+      }
+      const walkingBox = this.shadowRoot.getElementById('walkingBox');
+      this.walking = retrievedWalking == 'true';
+      if (this.walking == true) {
+        walkingBox.setAttribute('checked', 'true');
+      }
+      const circleBox = this.shadowRoot.getElementById('circleBox');
+      this.circle = retrievedCircle == 'true';
+      if (this.circle == true) {
+        circleBox.setAttribute('checked', 'true');
+      }
+
+    } else { // queryString not found
+      // Randomize options
       // Sets properties according to the randomized settings
-      this.accessories = character.accessories;
-      this.base = character.base;
+      console.log("RANDOMIZING");
+
+      this.accessories = Math.floor(Math.random() * 10); // 0-9
+      const baseRandom = Math.floor(Math.random() * 10);
+      if (baseRandom >= 0 && baseRandom <= 4) { // 0-9. Set to 0 if 0-4. Set to 1 if 5-9
+        this.base = 0;
+      } else if (baseRandom >= 5 && baseRandom <= 9) {
+        this.base = 1;
+      }
       this.leg = 0;
-      this.face = character.face;
-      this.faceItem = character.faceItem;
-      this.hair = character.hair;
-      this.pants = character.pants;
-      this.shirt = character.shirt;
-      this.skin = character.skin;
-      this.hatColor = character.hatColor;
+      this.face = Math.floor(Math.random() * 6); // 0-5
+      this.faceItem = Math.floor(Math.random() * 10); // 0-9
+      this.hair = Math.floor(Math.random() * 10); // 0-9
+      this.pants = Math.floor(Math.random() * 10); // 0-9
+      this.shirt = Math.floor(Math.random() * 10); // 0-9
+      this.skin = Math.floor(Math.random() * 10); // 0-9
+      this.hatColor = Math.floor(Math.random() * 10); // 0-9
       this.hat = character.hat;
       this.fire = character.fire;
       this.walking = character.walking;
       this.circle = character.circle;
     }
-
 
     // Listen to the 'selected' attribute change of the wired-combo element
     const combo0 = this.shadowRoot.getElementById('accessoryDrop');
@@ -552,7 +549,9 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
     this.circle = !this.circle;
   }
   testButton() {
-    window.alert(`Button pressed`);
+    const currentURL = window.location.href;
+    navigator.clipboard.writeText(currentURL);
+    alert("URL copied to clipboard");
   }
 
   handleResize() {
