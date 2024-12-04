@@ -319,6 +319,17 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
 
   firstUpdated() { //Sets up seed and MutationObservers 
     const character = this.shadowRoot.getElementById('character');
+    const accessoryDrop = this.shadowRoot.getElementById('accessoryDrop');
+    const baseDrop = this.shadowRoot.getElementById('baseDrop');
+    const faceDrop = this.shadowRoot.getElementById('faceDrop');
+    const faceItemDrop = this.shadowRoot.getElementById('faceItemDrop');
+    const hairDrop = this.shadowRoot.getElementById('hairDrop');
+    const pantsDrop = this.shadowRoot.getElementById('pantsDrop');
+    const shirtDrop = this.shadowRoot.getElementById('shirtDrop');
+    const skinDrop = this.shadowRoot.getElementById('skinDrop');
+    const hatColorDrop = this.shadowRoot.getElementById('hatColorDrop');
+    const hatDrop = this.shadowRoot.getElementById('hatDrop');
+    
 
     // Checks if there is query string for the seed in the URL
     const queryString = window.location.search;
@@ -341,23 +352,44 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
       console.log("Retrieved Walking: "+retrievedWalking);
       console.log("Retrieved Circle: "+retrievedCircle);
 
+      // Create a list to interpret each index
       const seedList = retrievedSeedText.split('');
 
       this.accessories = seedList[0];
+      accessoryDrop.setAttribute('selected', this.accessories);
+      
       if (seedList[1] >= 0 && seedList[1] <= 4) { // If 0-4 set to 1
         this.base = 0; // the element interprets 0 as male
       } else if (seedList[1] >= 5 && seedList[1] <= 9) { // if 5-9 set to 5
         this.base = 1; // the element intreprets 1 as female
       }
+      baseDrop.setAttribute('selected', this.base);
+
       this.leg = 0;
+
       this.face = seedList[3];
+      faceDrop.setAttribute('selected', this.face);
+
       this.faceItem = seedList[4];
+      faceItemDrop.setAttribute('selected', this.faceItem);
+
       this.hair = seedList[5];
+      hairDrop.setAttribute('selected', this.hair);
+
       this.pants = seedList[6];
+      pantsDrop.setAttribute('selected', this.pants);
+
       this.shirt = seedList[7];
+      shirtDrop.setAttribute('selected', this.shirt);
+
       this.skin = seedList[8];
+      skinDrop.setAttribute('selected', this.skin);
+
       this.hatColor = seedList[9];
+      hatColorDrop.setAttribute('selected', this.hatColor);
+
       this.hat = retrievedHat;
+      hatDrop.setAttribute('selected', this.hat);
 
       // Sets boolean variables. Boxes are checked accordingly
       const fireBox = this.shadowRoot.getElementById('fireBox');
@@ -382,24 +414,62 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
       console.log("RANDOMIZING");
 
       this.accessories = Math.floor(Math.random() * 10); // 0-9
+      const accessoryDrop = this.shadowRoot.getElementById('accessoryDrop');
+      accessoryDrop.setAttribute('selected', this.accessories);
+      
       const baseRandom = Math.floor(Math.random() * 10);
       if (baseRandom >= 0 && baseRandom <= 4) { // 0-9. Set to 0 if 0-4. Set to 1 if 5-9
         this.base = 0;
       } else if (baseRandom >= 5 && baseRandom <= 9) {
         this.base = 1;
       }
+      baseDrop.setAttribute('selected', this.base);
+
       this.leg = 0;
+
       this.face = Math.floor(Math.random() * 6); // 0-5
+      faceDrop.setAttribute('selected', this.face);
+
       this.faceItem = Math.floor(Math.random() * 10); // 0-9
+      faceItemDrop.setAttribute('selected', this.faceItem);
+
       this.hair = Math.floor(Math.random() * 10); // 0-9
+      hairDrop.setAttribute('selected', this.hair);
+
       this.pants = Math.floor(Math.random() * 10); // 0-9
+      pantsDrop.setAttribute('selected', this.pants);
+
       this.shirt = Math.floor(Math.random() * 10); // 0-9
+      shirtDrop.setAttribute('selected', this.shirt);
+
       this.skin = Math.floor(Math.random() * 10); // 0-9
+      skinDrop.setAttribute('selected', this.skin);
+
       this.hatColor = Math.floor(Math.random() * 10); // 0-9
+      hatColorDrop.setAttribute('selected', this.hatColor);
+
+      const hatList = ['none', 'bunny', 'coffee', 'construction', 'cowboy', 'education', 'knight', 'ninja', 'party', 'pirate', 'watermelon'];
       this.hat = character.hat;
-      this.fire = character.fire;
-      this.walking = character.walking;
-      this.circle = character.circle;
+      hatDrop.setAttribute('selected', this.hat);
+
+      // this.fire = character.fire;
+      // this.walking = character.walking;
+      // this.circle = character.circle;
+      this.fire = Math.random() < 0.5; // random either true or false
+      const fireBox = this.shadowRoot.getElementById('fireBox');
+      if (this.fire == true) {
+        fireBox.setAttribute('checked', 'true');
+      }
+      this.walking = Math.random() < 0.5;
+      const walkingBox = this.shadowRoot.getElementById('walkingBox');
+      if (this.walking == true) {
+        walkingBox.setAttribute('checked', 'true');
+      }
+      this.circle = Math.random() < 0.5;
+      const circleBox = this.shadowRoot.getElementById('circleBox');
+      if (this.circle == true) {
+        circleBox.setAttribute('checked', 'true');
+      }
     }
 
     // Listen to the 'selected' attribute change of the wired-combo element
