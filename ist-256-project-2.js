@@ -448,8 +448,9 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
       this.hatColor = Math.floor(Math.random() * 10); // 0-9
       hatColorDrop.setAttribute('selected', this.hatColor);
 
-      const hatList = ['none', 'bunny', 'coffee', 'construction', 'cowboy', 'education', 'knight', 'ninja', 'party', 'pirate', 'watermelon'];
-      this.hat = character.hat;
+      const hatList = ['none', 'bunny', 'coffee', 'construction', 'cowboy', 'education', 'knight', 'ninja', 'party', 'pirate', 'watermelon', 'random'];
+      this.hat = hatList[Math.floor(Math.random() * 12)]; // 0-11
+      // this.hat = character.hat;
       hatDrop.setAttribute('selected', this.hat);
 
       // this.fire = character.fire;
