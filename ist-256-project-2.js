@@ -23,16 +23,16 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
 
   constructor() {
     super();
-    this.accessories = "0"; //0-9. 0 is nothing
-    this.base = "0";        //0 or 1 (For the seed: Male 0-4, Female 5-9)
-    this.leg = "0";         //set to 0 and hide input
-    this.face = "0";        //0-5. 0 is nothing
-    this.faceItem = "0";    //0-9. 0 is nothing
-    this.hair = "0";        //0-9
-    this.pants = "0";       //0-9
-    this.shirt = "0";       //0-9
-    this.skin = "0";        //0-9
-    this.hatColor = "0";    //0-9
+    this.accessories = 0; //0-9. 0 is nothing
+    this.base = 0;        //0 or 1 (For the seed: Male 0-4, Female 5-9)
+    this.leg = 0;         //set to 0 and hide input
+    this.face = 0;        //0-5. 0 is nothing
+    this.faceItem = 0;    //0-9. 0 is nothing
+    this.hair = 0;        //0-9
+    this.pants = 0;       //0-9
+    this.shirt = 0;       //0-9
+    this.skin = 0;        //0-9
+    this.hatColor = 0;    //0-9
     this.hat = "none";      //15 hats including "none"
     this.fire = false;      // true or false
     this.walking = false;   // true or false
@@ -41,8 +41,8 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
     this.seedText = "";  // The seed used if 10 digits Ex: "1505537481"
     // this.seed = "";         // The seed used if a user types in a literalseed Ex: "1505537481"
 
-    this.characterWidth = "450";  //Width of the character (adjusts to viewport)
-    this.characterHeight = "450"; //Height of the charcter (adjusts to viewport)
+    this.characterWidth = 450;  //Width of the character (adjusts to viewport)
+    this.characterHeight = 450; //Height of the charcter (adjusts to viewport)
     this.viewportWidth = window.innerWidth; // Initialize with current width
     window.addEventListener('resize', () => this.handleResize());
   }
@@ -50,16 +50,16 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
   // Lit reactive properties
   static get properties() {
     return {
-      accessories: { type: String, reflect: true }, //syncs property and attribute
-      base: { type: String, reflect: true },
-      leg: { type: String, reflect: true },
-      face: { type: String, reflect: true },
-      faceItem: { type: String, reflect: true },
-      hair: { type: String, reflect: true },
-      pants: { type: String, reflect: true },
-      shirt: { type: String, reflect: true },
-      skin: { type: String, reflect: true },
-      hatColor: { type: String, reflect: true },
+      accessories: { type: Number, reflect: true }, //syncs property and attribute
+      base: { type: Number, reflect: true },
+      leg: { type: Number, reflect: true },
+      face: { type: Number, reflect: true },
+      faceItem: { type: Number, reflect: true },
+      hair: { type: Number, reflect: true },
+      pants: { type: Number, reflect: true },
+      shirt: { type: Number, reflect: true },
+      skin: { type: Number, reflect: true },
+      hatColor: { type: Number, reflect: true },
       hat: { type: String, reflect: true },
       fire: { type: Boolean, reflect: true },
       walking: { type: Boolean, reflect: true },
@@ -67,10 +67,9 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
 
       seedText: { type: String, reflect: true },
       // seed: { type: String, reflect: true },
-      literalseed: { type: Boolean, reflect: true},
       
-      characterWidth: { type: String, reflect: true },
-      characterHeight: { type: String, reflect: true},
+      characterWidth: { type: Number, reflect: true },
+      characterHeight: { type: Number, reflect: true},
       viewportWidth: { type: Number },
     };
   }
@@ -85,11 +84,11 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
       }
       td {
         height: 40px;;
-        padding: var(--ddd-spacing-1); //4px
-        font-size: var(--ddd-font-size-xxs); //20px
+        padding: var(--ddd-spacing-1); /* 4px */
+        font-size: var(--ddd-font-size-xxs); /* 20px */
       }
       .td-title {
-        font-weight: var(--ddd-font-weight-bold, 700); //bold font
+        font-weight: var(--ddd-font-weight-bold, 700); /* bold font */
       }
 
     `];
