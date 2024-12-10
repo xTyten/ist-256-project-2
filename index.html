@@ -24,11 +24,10 @@
   </script>
   
   <div id="demo">
-    <!-- <rpg-character
-      literalseed
-      seed="1505537481"
-      walking
-    ></rpg-character> -->
+    <!-- There's a bug when starting the characer with the walking attribute.
+     If you load a character with a queryString with walking=true, the character won't walk
+     if you toggle walk off and on it will work again. The walking attribute correctly
+     applies on the rpg-character element so I don't know why it isn't working. -->
     <h4 class="projTitle">ist-256-project-2</h4>
     <p>Github issue: <a href="https://github.com/haxtheweb/issues/issues/1414">link</a></p>
     <ist-256-project-2 
