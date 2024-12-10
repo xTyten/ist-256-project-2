@@ -90,6 +90,10 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
       .td-title {
         font-weight: var(--ddd-font-weight-bold, 700); /* bold font */
       }
+      .bottom {
+        padding-top: var(--ddd-spacing-20); /* 80px */
+        padding-bottom: var(--ddd-spacing-20); /* 80px */
+      }
 
     `];
   }
@@ -313,10 +317,12 @@ export class Ist256Project2 extends DDDSuper(I18NMixin(LitElement)) {
         </form>
       </table>
     </div>
+    <div class="bottom"></div>
     `;
   }
 
   firstUpdated() { //Sets up seed and MutationObservers 
+    super.firstUpdated();
     const character = this.shadowRoot.getElementById('character');
     const accessoryDrop = this.shadowRoot.getElementById('accessoryDrop');
     const baseDrop = this.shadowRoot.getElementById('baseDrop');
